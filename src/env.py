@@ -21,12 +21,16 @@ class TradingEnv(gym.Env):
         return self._nextObservation()
     
     def _nextObservation(self):
-        obs = np.concatenate([
-            self.data.iloc[self.currentStep - self.windowSize:self.currentStep]['Close'].values,
-            [self.balance],
-            [self.sharesHeld]
+        prices = self.data.iloc[self.currentStep - self.windowSize:self.currentStep]['Close'].values
+        normalizedprices = (prices - np.mean(prices)) / (np.std(prices) + 1e-8)
+        normalizedbalance = self.balance / self.initialBalance
+        normalizedshares = self.sharesHeld / (self.initialBalance / prices[-1])  # max possible shares
+        
+        return np.concatenate([
+            normalizedprices,
+            [normalizedbalance],
+            [normalizedshares]
         ])
-        return obs
     
     def step(self, action):
         currentPrice = self.data.iloc[self.currentStep]['Close']
