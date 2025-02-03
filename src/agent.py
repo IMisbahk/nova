@@ -32,9 +32,9 @@ class DQNAgent:
     def act(self, state):
         if np.random.rand() <= self.epsilon:
             return random.randrange(self.action_size)
-        state = torch.FloatTensor(state)
+        state_tensor = torch.from_numpy(np.array(state, dtype=np.float32)).float()
         with torch.no_grad():
-            act_values = self.model(state)
+            act_values = self.model(state_tensor)
         return torch.argmax(act_values).item()
     
     def replay(self, batch_size=32):
