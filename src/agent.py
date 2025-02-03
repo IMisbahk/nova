@@ -44,11 +44,11 @@ class DQNAgent:
         minibatch = random.sample(self.memory, batch_size)
         optimizer = optim.Adam(self.model.parameters())
         
-        states = torch.FloatTensor([t[0] for t in minibatch])
-        actions = torch.LongTensor([t[1] for t in minibatch])
-        rewards = torch.FloatTensor([t[2] for t in minibatch])
-        next_states = torch.FloatTensor([t[3] for t in minibatch])
-        dones = torch.FloatTensor([t[4] for t in minibatch])
+        states = np.array([t[0] for t in minibatch], dtype=np.float32)
+        actions = np.array([t[1] for t in minibatch], dtype=np.int64)
+        rewards = np.array([t[2] for t in minibatch], dtype=np.float32)
+        next_states = np.array([t[3] for t in minibatch], dtype=np.float32)
+        dones = np.array([t[4] for t in minibatch], dtype=np.float32)
         
         current_q = self.model(states).gather(1, actions.unsqueeze(1))
         next_q = self.model(next_states).max(1)[0].detach()
