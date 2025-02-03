@@ -12,7 +12,21 @@ class TradingEnv(gym.Env):
         self.actionSpace = spaces.Discrete(3)
         self.observationSpace = spaces.Box(low=-np.inf, high=np.inf, shape=(windowSize + 2,), dtype=np.float32)
         self.reset()
-    
+        
+    def step(self, action):
+        currentPrice = self.data.iloc[self.currentStep]['Close']
+        if action == 1: 
+            if self.balance > currentPrice:
+                numShares = self.balance // currentPrice
+                self.sharesHeld += numShares
+                self.balance -= numShares * currentPrice
+        elif action == 2: 
+            if self.sharesHeld > 0:
+                self.balance += self.sharesHeld * currentPrice
+                self.sharesHeld = 0
+        
+        self.currentStep += 1
+
     def reset(self):
         self.currentStep = self.windowSize
         self.balance = self.initialBalance
