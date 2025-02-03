@@ -21,8 +21,6 @@ Nova/
 │   ├── train.py          # Training script
 │   ├── env.py            # Trading environment
 │   ├── ui.py             # Simple UI to interact with Nova
-└── models/               # Store trained models
-    └── nova_model.zip
 ```
 
 ## Installation
