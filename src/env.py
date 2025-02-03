@@ -7,6 +7,9 @@ class TradingEnv(gym.Env):
     def __init__(self, dataPath, initialBalance=10000, windowSize=50):
         super(TradingEnv, self).__init__()
         self.data = pd.read_csv(dataPath)
+
+        
+
         self.initialBalance = initialBalance
         self.windowSize = windowSize
         self.actionSpace = spaces.Discrete(3)
@@ -30,7 +33,7 @@ class TradingEnv(gym.Env):
             normalizedprices,
             [normalizedbalance],
             [normalizedshares]
-        ])
+        ]).astype(np.float32)
     
     def step(self, action):
         currentPrice = self.data.iloc[self.currentStep]['Close']

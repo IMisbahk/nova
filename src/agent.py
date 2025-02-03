@@ -32,7 +32,7 @@ class DQNAgent:
     def act(self, state):
         if np.random.rand() <= self.epsilon:
             return random.randrange(self.action_size)
-        state_tensor = torch.from_numpy(np.array(state, dtype=np.float32)).float()
+        state_tensor = torch.FloatTensor(state).unsqueeze(0) 
         with torch.no_grad():
             act_values = self.model(state_tensor)
         return torch.argmax(act_values).item()
@@ -44,12 +44,13 @@ class DQNAgent:
         minibatch = random.sample(self.memory, batch_size)
         optimizer = optim.Adam(self.model.parameters())
         
-        states = np.array([t[0] for t in minibatch], dtype=np.float32)
-        actions = np.array([t[1] for t in minibatch], dtype=np.int64)
-        rewards = np.array([t[2] for t in minibatch], dtype=np.float32)
-        next_states = np.array([t[3] for t in minibatch], dtype=np.float32)
-        dones = np.array([t[4] for t in minibatch], dtype=np.float32)
-        
+        states = torch.FloatTensor(np.array([t[0] for t in minibatch], dtype=np.float32))
+        actions = torch.LongTensor(np.array([t[1] for t in minibatch], dtype=np.int64))
+        rewards = torch.FloatTensor(np.array([t[2] for t in minibatch], dtype=np.float32))
+        next_states = torch.FloatTensor(np.array([t[3] for t in minibatch], dtype=np.float32))
+        dones = torch.FloatTensor(np.array([t[4] for t in minibatch], dtype=np.float32))
+
+        # Pass tensors to the model
         current_q = self.model(states).gather(1, actions.unsqueeze(1))
         next_q = self.model(next_states).max(1)[0].detach()
         target = rewards + (1 - dones) * self.gamma * next_q

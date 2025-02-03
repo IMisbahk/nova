@@ -1,6 +1,7 @@
 from env import TradingEnv
 from agent import DQNAgent
 import torch
+import numpy as np  
 
 def train():
     env = TradingEnv('data/prices.csv')
@@ -13,6 +14,7 @@ def train():
     
     for e in range(episodes):
         state = env.reset()
+        state = np.array(state, dtype=np.float32)
         totalreward = 0
         
         while True:
@@ -29,7 +31,7 @@ def train():
             agent.replay(batch_size)
         
         #saving model regularly
-        if e % 50 == 0:
+        if e % 2 == 0:
             torch.save(agent.model.state_dict(), f'models/nova_model_{e}.pth')
 
 if __name__ == '__main__':
