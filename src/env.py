@@ -8,8 +8,6 @@ class TradingEnv(gym.Env):
         super(TradingEnv, self).__init__()
         self.data = pd.read_csv(dataPath)
 
-        
-
         self.initialBalance = initialBalance
         self.windowSize = windowSize
         self.actionSpace = spaces.Discrete(3)
